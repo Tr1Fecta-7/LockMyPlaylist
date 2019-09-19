@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>LockMyPlaylist</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.tr1fecta.lockmyplaylist</string>
+			<key>key</key>
+			<string>tweakEnabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Put the name of the playlist u wish to lock here. If u wish to lock multiple playlists split each name with a "," (comma)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>defaults</key>
+			<string>com.tr1fecta.lockmyplaylist</string>
+			<key>key</key>
+			<string>playlistNames</string>
+			<key>placeholder</key>
+			<string>playlist1, playlist2</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>respring</string>
+			<key>label</key>
+			<string>Respring (apply changes)</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>LockMyPlaylist</string>
+</dict>
+</plist>
