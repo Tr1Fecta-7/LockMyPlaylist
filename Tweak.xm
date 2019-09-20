@@ -59,20 +59,22 @@ void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
 
 %new
 -(void)handleTap:(UITapGestureRecognizer *)gestureRecognizer {
-    //UILabel* playlistLabel = MSHookIvar<UILabel *>(self, "_titleLabel");
+    /*(UILabel* playlistLabel = MSHookIvar<UILabel *>(self, "_titleLabel");
 
-    //if ([playlistLabel.text isEqualToString:@"Playlist"]) {
-    //    checkAuth(gestureRecognizer);
-    //}
-    //NSLog(@"PLAYLIST NAMES1: %@", playlistNames);
+    if ([playlistLabel.text isEqualToString:@"Playlist"]) {
+        checkAuth(gestureRecognizer);
+    }*/
 
     NSLog(@"TWEAK ENABLED: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString]);
-    if ([playlistNames isEqualToString:playlistNames]) {
+    if ([playlistNames isEqualToString:@"Playlist"]) {
         checkAuth(gestureRecognizer);
     }
     else {
         gestureRecognizer.cancelsTouchesInView = NO;
     }
+
+
+
 
 
 }
@@ -81,8 +83,9 @@ void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
 
 
 %ctor {
+    NSLog(@"PLAYLIST NAMES1: SSSSSSSS");
     if ([(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"tweakEnabled" inDomain:domainString] boolValue]) {
         playlistNames = [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString];
-        NSLog(@"PLAYLIST NAMES1: %@", playlistNames);
+
     }
 }

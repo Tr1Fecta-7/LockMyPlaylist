@@ -87,12 +87,12 @@ static GLUEEntityRowContentView* _logos_method$_ungrouped$GLUEEntityRowContentVi
 static void _logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$(_LOGOS_SELF_TYPE_NORMAL GLUEEntityRowContentView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, UITapGestureRecognizer * gestureRecognizer) {
     
 
-    
-    
-    
-    
+
+
+
+
     NSLog(@"TWEAK ENABLED: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString]);
-    if ([playlistNames isEqualToString:@"Playlist, Label Engine"]) {
+    if ([playlistNames isEqualToString:@"Playlist"]) {
         checkAuth(gestureRecognizer);
     }
     else {
@@ -100,13 +100,16 @@ static void _logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$(_LOGOS_
     }
 
 
+
+
+
 }
 
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_79b7d147(int __unused argc, char __unused **argv, char __unused **envp) {
-    NSLog(@"PLAYLIST NAMES1: %@", playlistNames);
+static __attribute__((constructor)) void _logosLocalCtor_1e986352(int __unused argc, char __unused **argv, char __unused **envp) {
+    NSLog(@"PLAYLIST NAMES1: SSSSSSSS");
     if ([(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"tweakEnabled" inDomain:domainString] boolValue]) {
         playlistNames = [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString];
 
@@ -114,4 +117,4 @@ static __attribute__((constructor)) void _logosLocalCtor_79b7d147(int __unused a
 }
 static __attribute__((constructor)) void _logosLocalInit() {
 {Class _logos_class$_ungrouped$GLUEEntityRowContentView = objc_getClass("GLUEEntityRowContentView"); MSHookMessageEx(_logos_class$_ungrouped$GLUEEntityRowContentView, @selector(initWithFrame:), (IMP)&_logos_method$_ungrouped$GLUEEntityRowContentView$initWithFrame$, (IMP*)&_logos_orig$_ungrouped$GLUEEntityRowContentView$initWithFrame$);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UITapGestureRecognizer *), strlen(@encode(UITapGestureRecognizer *))); i += strlen(@encode(UITapGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$GLUEEntityRowContentView, @selector(handleTap:), (IMP)&_logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$, _typeEncoding); }} }
-#line 89 "Tweak.xm"
+#line 92 "Tweak.xm"
