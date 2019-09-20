@@ -86,6 +86,6 @@ void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
     NSLog(@"PLAYLIST NAMES1: SSSSSSSS");
     if ([(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"tweakEnabled" inDomain:domainString] boolValue]) {
         playlistNames = [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString];
-
+        NSLog(@"TWEAK LOADEEEEEED AAA");
     }
 }
