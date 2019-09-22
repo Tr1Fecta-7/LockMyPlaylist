@@ -1,4 +1,5 @@
 #include "TLMPRootListController.h"
+
 #import <spawn.h>
 
 @implementation TLMPRootListController
@@ -11,6 +12,9 @@
 	return _specifiers;
 }
 
+- (void)refresh:(id)sender {
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),  CFSTR("com.tr1fecta.lockmyplaylist.settingschanged"), nil, nil, true);
+}
 
 -(void)respring{
 	pid_t pid;

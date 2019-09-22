@@ -3,34 +3,80 @@
 #include "Preferences/PSSpecifier.h"
 #import <Foundation/NSUserDefaults.h>
 
-static NSString *domainString = @"com.tr1fecta.lockmyplaylist";
-NSString* playlistNames;
+#define kIdentifier @"com.tr1fecta.lockmyplaylist"
+#define kSettingsChangedNotification (CFStringRef)@"com.tr1fecta.lockmyplaylist/settingschanged"
+#define kSettingsPath @"/var/mobile/Library/Preferences/com.tr1fecta.lockmyplaylist.plist"
+
+NSDictionary* prefs = nil;
+NSString* playlistNamesString;
+NSArray* playlistNamesArray;
+BOOL tweakEnabled;
+BOOL authEveryTimeEnabled;
 
 
-@interface NSUserDefaults (UFS_Category)
-- (id)objectForKey:(NSString *)key inDomain:(NSString *)domain;
-- (void)setObject:(id)value forKey:(NSString *)key inDomain:(NSString *)domain;
-@end
+static void reloadPrefs() {
+    if ([NSHomeDirectory() isEqualToString:@"/var/mobile"]) {
+		CFArrayRef keyList = CFPreferencesCopyKeyList((CFStringRef)kIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+		if (keyList) {
+			prefs = (__bridge NSDictionary *)CFPreferencesCopyMultiple(keyList, (CFStringRef)kIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+			if (!prefs) {
+				prefs = [NSDictionary new];
+			}
+			CFRelease(keyList);
+		}
+    }
+    else {
+        prefs = [NSDictionary dictionaryWithContentsOfFile:kSettingsPath];
+    }
+}
 
+
+
+static BOOL boolValueForKey(NSString *key, BOOL defaultValue) {
+	return (prefs && [prefs objectForKey:key]) ? [[prefs objectForKey:key] boolValue] : defaultValue;
+}
+
+static void preferencesChanged() {
+    CFPreferencesAppSynchronize((CFStringRef)kIdentifier);
+    reloadPrefs();
+
+    tweakEnabled = boolValueForKey(@"tweakEnabled", YES);
+    authEveryTimeEnabled = boolValueForKey(@"authEveryTimeEnabled", NO);
+    playlistNamesString = [prefs objectForKey:@"playlistNames"];
+
+}
+
+
+static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    preferencesChanged();
+}
 
 
 LAPolicy policy = LAPolicyDeviceOwnerAuthentication;
 NSString *reason = @"Authentication Required";
 BOOL authenticated;
+int check_ForAuthEveryTime; 
 
 
 void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
     LAContext *context = [[LAContext alloc] init];
     NSError *error = nil;
 
+    if (check_ForAuthEveryTime == 2 && authEveryTimeEnabled) {
+        authenticated = NO;
+        gestureRecognizer.cancelsTouchesInView = YES;
+    }
+
     if (authenticated) {
         gestureRecognizer.cancelsTouchesInView = NO;
+        check_ForAuthEveryTime = 2;
     }
     else {
         if ([context canEvaluatePolicy:policy error:&error]) {
             [context evaluatePolicy:policy localizedReason:reason reply:^(BOOL success, NSError *error) {
                 if (success) {
                     authenticated = YES;
+                    check_ForAuthEveryTime = 1;
                 }
                 else {
                     authenticated = NO;
@@ -39,7 +85,6 @@ void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
         }
     }
 }
-
 
 
 
@@ -66,7 +111,7 @@ void checkAuth(UITapGestureRecognizer* gestureRecognizer) {
 @class GLUEEntityRowContentView; 
 static GLUEEntityRowContentView* (*_logos_orig$_ungrouped$GLUEEntityRowContentView$initWithFrame$)(_LOGOS_SELF_TYPE_INIT GLUEEntityRowContentView*, SEL, CGRect) _LOGOS_RETURN_RETAINED; static GLUEEntityRowContentView* _logos_method$_ungrouped$GLUEEntityRowContentView$initWithFrame$(_LOGOS_SELF_TYPE_INIT GLUEEntityRowContentView*, SEL, CGRect) _LOGOS_RETURN_RETAINED; static void _logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$(_LOGOS_SELF_TYPE_NORMAL GLUEEntityRowContentView* _LOGOS_SELF_CONST, SEL, UITapGestureRecognizer *); 
 
-#line 44 "Tweak.xm"
+#line 89 "Tweak.xm"
 
 
 static GLUEEntityRowContentView* _logos_method$_ungrouped$GLUEEntityRowContentView$initWithFrame$(_LOGOS_SELF_TYPE_INIT GLUEEntityRowContentView* __unused self, SEL __unused _cmd, CGRect arg1) _LOGOS_RETURN_RETAINED {
@@ -85,36 +130,39 @@ static GLUEEntityRowContentView* _logos_method$_ungrouped$GLUEEntityRowContentVi
 
 
 static void _logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$(_LOGOS_SELF_TYPE_NORMAL GLUEEntityRowContentView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, UITapGestureRecognizer * gestureRecognizer) {
-    
+    UILabel* playlistLabel = MSHookIvar<UILabel *>(self, "_titleLabel");
 
 
-
-
-
-    NSLog(@"TWEAK ENABLED: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString]);
-    if ([playlistNames isEqualToString:@"Playlist"]) {
-        checkAuth(gestureRecognizer);
+    for (NSString* playlist in playlistNamesArray) {
+        if ([playlistLabel.text isEqualToString:playlist]) {
+            checkAuth(gestureRecognizer);
+        }
+        else {
+            gestureRecognizer.cancelsTouchesInView = NO;
+        }
     }
-    else {
-        gestureRecognizer.cancelsTouchesInView = NO;
-    }
-
-
-
-
-
 }
 
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_1e986352(int __unused argc, char __unused **argv, char __unused **envp) {
-    NSLog(@"PLAYLIST NAMES1: SSSSSSSS");
-    if ([(NSNumber *)[[NSUserDefaults standardUserDefaults] objectForKey:@"tweakEnabled" inDomain:domainString] boolValue]) {
-        playlistNames = [[NSUserDefaults standardUserDefaults] objectForKey:@"playlistNames" inDomain:domainString];
 
+
+
+static __attribute__((constructor)) void _logosLocalCtor_443d4de9(int __unused argc, char __unused **argv, char __unused **envp) {
+    tweakEnabled = boolValueForKey(@"tweakEnabled", YES);
+    if (tweakEnabled) {
+        preferencesChanged();
+    	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("com.tr1fecta.lock.settingschanged"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+    	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, kSettingsChangedNotification, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
+        playlistNamesArray = [playlistNamesString componentsSeparatedByString:@", "];
     }
+
+
+    
+
 }
 static __attribute__((constructor)) void _logosLocalInit() {
 {Class _logos_class$_ungrouped$GLUEEntityRowContentView = objc_getClass("GLUEEntityRowContentView"); MSHookMessageEx(_logos_class$_ungrouped$GLUEEntityRowContentView, @selector(initWithFrame:), (IMP)&_logos_method$_ungrouped$GLUEEntityRowContentView$initWithFrame$, (IMP*)&_logos_orig$_ungrouped$GLUEEntityRowContentView$initWithFrame$);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UITapGestureRecognizer *), strlen(@encode(UITapGestureRecognizer *))); i += strlen(@encode(UITapGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$GLUEEntityRowContentView, @selector(handleTap:), (IMP)&_logos_method$_ungrouped$GLUEEntityRowContentView$handleTap$, _typeEncoding); }} }
-#line 92 "Tweak.xm"
+#line 140 "Tweak.xm"

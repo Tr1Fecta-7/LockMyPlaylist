@@ -9,6 +9,7 @@ tr1lockmyplaylistprefs_FILES = TLMPRootListController.m
 tr1lockmyplaylistprefs_INSTALL_PATH = /Library/PreferenceBundles
 tr1lockmyplaylistprefs_FRAMEWORKS = UIKit
 tr1lockmyplaylistprefs_PRIVATE_FRAMEWORKS = Preferences
+tr1lockmyplaylistprefs_EXTRA_FRAMEWORKS = Cephei CepheiPrefs
 tr1lockmyplaylistprefs_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/bundle.mk

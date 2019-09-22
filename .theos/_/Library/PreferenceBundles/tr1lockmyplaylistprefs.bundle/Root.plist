@@ -23,6 +23,30 @@
 			<string>Enabled</string>
 		</dict>
 		<dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>Settings</string>
+        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Ask for authentication, everytime you back out of the playlist.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.tr1fecta.lockmyplaylist</string>
+			<key>key</key>
+			<string>authEveryTimeEnabled</string>
+			<key>label</key>
+			<string>Authenticate every time:</string>
+		</dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
@@ -37,6 +61,12 @@
 			<string>playlistNames</string>
 			<key>placeholder</key>
 			<string>playlist1, playlist2</string>
+			<key>PostNotification</key>
+			<string>com.tr1fecta.lockmyplaylist/settingschanged</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -49,6 +79,24 @@
 			<string>respring</string>
 			<key>label</key>
 			<string>Respring (apply changes)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Author</string>
+			<key>footerText</key>
+			<string></string>
+			<key>isStaticText</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>Tr1Fecta</string>
+			<key>user</key>
+			<string>FectaTr1</string>
 		</dict>
 	</array>
 	<key>title</key>
